@@ -23,7 +23,7 @@ int main()
 			
 			string target = "";
 			cout << "Enter input word: ";
-			cin >> target;
+			getline(cin, target);
 			cout << "Writting assembler...\n";
 			for(int i = 0; i < target.length(); i++)
 			{
