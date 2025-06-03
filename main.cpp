@@ -25,41 +25,31 @@ int main()
 			cout << "Enter input word: ";
 			getline(cin, target);
 			cout << "Writting assembler...\n";
-			for(int i = 0; i < target.length(); i++)
-			{
-				int character = int(target[i]);
-				output << ";Sign " << target[i] << " ASCII: " << character << "\n";
-				output << "CBI PORTB, 0\t;Start sign\nCALL DELAY_104\n";
-				cout << target[i] << " = " << character << "\t";
-				while(character >= 1)
-				{
-					int result = character % 2;
-					cout << result;
-					if(result == 0)
-					{
-						output << "CBI PORTB, 0\n";
-					}
-					else if(result == 1)
-					{
-						output << "SBI PORTB, 0\n";
-					}
-					else throw("Conversion failed");
-					character = character / 2;
-					output << "CALL DELAY_104\n";
-				}
-				if(character == 0)
-					{
-						output << "CBI PORTB, 0\n";
-					}
-					else if(character == 1)
-					{
-						output << "SBI PORTB, 0\n";
-					}
-					
-					else throw("Conversion failed");
-				cout << "\n";
-				output << "CALL DELAY_104\nSBI PORTB, 0\t;Stop sign\nCALL DELAY_104\n";
-			}
+                        for(int i = 0; i < target.length(); i++)
+                        {
+                                int character = static_cast<int>(target[i]);
+                                output << ";Sign " << target[i] << " ASCII: " << character << "\n";
+                                output << "CBI PORTB, 0\t;Start sign\nCALL DELAY_104\n";
+                                cout << target[i] << " = " << character << "\t";
+
+                                for(int bit = 0; bit < 8; ++bit)
+                                {
+                                        int result = (character >> bit) & 1;
+                                        cout << result;
+                                        if(result == 0)
+                                        {
+                                                output << "CBI PORTB, 0\n";
+                                        }
+                                        else
+                                        {
+                                                output << "SBI PORTB, 0\n";
+                                        }
+                                        output << "CALL DELAY_104\n";
+                                }
+
+                                cout << "\n";
+                                output << "SBI PORTB, 0\t;Stop sign\nCALL DELAY_104\n";
+                        }
 			output << "RET\n";
 			cout << "done\nClosing output...";
 			output.close();
